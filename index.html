@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake Hacking Terminal</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Courier New', monospace;
+            color: lime;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .terminal {
+            width: 90%;
+            max-width: 800px;
+            height: 400px;
+            background-color: black;
+            border: 2px solid lime;
+            padding: 10px;
+            overflow-y: auto;
+            margin: auto;
+        }
+
+        #output {
+            height: 350px;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+
+        #input {
+            width: 100%;
+            background: black;
+            color: lime;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div id="output"></div>
+        <input id="input" type="text" autofocus onkeydown="handleCommand(event)">
+    </div>
+
+    <script>
+        const output = document.getElementById("output");
+        const input = document.getElementById("input");
+
+        const hackingCommands = [
+            "nmap -sV -Pn target_ip",
+            "hydra -l admin -P passwords.txt ssh://target_ip",
+            "sqlmap -u target_website --dbs",
+            "airmon-ng start wlan0",
+            "msfconsole -x 'use exploit/multi/handler'",
+            "scp exploit.sh root@target_ip:/tmp/"
+        ];
+
+        let hackingStep = 0;
+        let systemName = "";
+        let locationName = "";
+        let passwordCracked = "";
+
+        const userPath = "C:\\Users\\Sharek>";
+
+        function handleCommand(event) {
+            if (event.key === "Enter") {
+                let userCommand = input.value.trim();
+                input.value = "";
+                
+                output.innerHTML += `<p>${userPath} ${userCommand}</p>`;
+                output.scrollTop = output.scrollHeight;
+
+                if (hackingStep === 0) {
+                    let hackingCommand = hackingCommands[Math.floor(Math.random() * hackingCommands.length)];
+                    output.innerHTML += `<p>Executing: ${hackingCommand}...</p>`;
+                    hackingStep++;
+                    setTimeout(() => {
+                        output.innerHTML += `<p>Scanning vulnerabilities...</p>`;
+                        output.scrollTop = output.scrollHeight;
+                    }, 1000);
+                } 
+                else if (hackingStep === 1) {
+                    output.innerHTML += `<p>Enter target system name (Bank, Database, SecuritySystem):</p>`;
+                    hackingStep++;
+                } 
+                else if (hackingStep === 2) {
+                    systemName = userCommand;
+                    output.innerHTML += `<p>Enter target location (City, Country):</p>`;
+                    hackingStep++;
+                } 
+                else if (hackingStep === 3) {
+                    locationName = userCommand;
+                    output.innerHTML += `<p>Brute forcing password...</p>`;
+                    hackingStep++;
+
+                    let attempts = 0;
+                    let interval = setInterval(() => {
+                        attempts++;
+                        let fakePassword = Math.random().toString(36).slice(-8);
+                        output.innerHTML += `<p>Trying: ${fakePassword}</p>`;
+                        output.scrollTop = output.scrollHeight;
+
+                        if (attempts > 10) {
+                            clearInterval(interval);
+                            passwordCracked = Math.random().toString(36).slice(-8);
+                            output.innerHTML += `<p>✅ Password Cracked: ${passwordCracked}</p>`;
+                            output.innerHTML += `<p>Enter password to confirm access:</p>`;
+                            output.scrollTop = output.scrollHeight;
+                            hackingStep++;
+                        }
+                    }, 500);
+                } 
+                else if (hackingStep === 5) {
+                    if (userCommand === passwordCracked) {
+                        output.innerHTML += `<p>🔓 Access granted! ${systemName} in ${locationName} has been hacked.</p>`;
+                    } else {
+                        output.innerHTML += `<p>❌ Incorrect password. Try again.</p>`;
+                    }
+                    output.scrollTop = output.scrollHeight;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
